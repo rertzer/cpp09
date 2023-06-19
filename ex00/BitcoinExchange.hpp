@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 10:36:14 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/19 16:46:14 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/19 17:41:08 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ class	BitcoinExchange
 		void	processInput(std::string const & filename) const;
 		void	processInputEntry(std::pair<struct tm, float>);
 		void	printExchange() const;
-		//float	getValueByDate(struct tm date) const;
-		//float	convert(struct tm date, float amount) const;
+		float	getValueByDate(struct tm date) const;
+		float	convert(std::pair<struct tm, float>) const;
 
 		class	CsvParsingException: public std::exception
 		{

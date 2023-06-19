@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 09:52:23 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/19 16:57:56 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/19 18:06:25 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,21 @@ void	BitcoinExchange::processInputEntry(std::pair<struct tm, float> entry)
 		std::cout << "Error: too large a number\n";
 		return ;
 	}
+	if (timeCompare(entry->first, *exchange.begin()))
+	{
+		std::cout << "Error: date to early\n";
+		return ;
+	}
+
+	char	date[11];
+	strftime(date, 11, "%Y-%m-%d", entry->first);
+	std::cout << date << " => " << entry->second << " = " << convert(entry) << std::endl;
 }
 
+float	BitcoinExchange::convert(std::pair<struct tm, float> entry)
+{
+
+}
 
 bool	timeCompare(struct tm const & a, struct tm const & b)
 {
