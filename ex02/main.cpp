@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 10:14:07 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/21 15:01:28 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/22 12:45:45 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,21 @@ int	main(int argc, char **argv)
 		std::cout << "Please enter a list of positive numbers as arguments\n";
 		return (1);
 	}
-	NbVector	to_sort = NbVector();
+
 	try
 	{
+		NbVector	to_sort = NbVector();
 		to_sort.loadData(argc, argv);
+		std::cout << "Before: " << to_sort << std::endl;
+		fjSort(to_sort);
+		std::cout << "After: " << to_sort << std::endl;
 	}
 	catch (NbVector::ParsingException & e)
+	{
+		std::cout << e.what() << std::endl;
+		return (1);
+	}
+	catch (NbVector::OutOfRangeException & e)
 	{
 		std::cout << e.what() << std::endl;
 		return (1);
@@ -34,9 +43,6 @@ int	main(int argc, char **argv)
 		std::cout << e.what() << std::endl;
 		return (1);
 	}
-	std::cout << "Before: " << to_sort << std::endl;
-	fjSort(to_sort);
-
 
 	return (0);
 }

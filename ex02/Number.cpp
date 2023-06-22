@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:47:49 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/21 14:34:58 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/22 16:38:59 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,12 @@ bool	Number::operator<(Number const & rhs) const
 {
 	return (value < rhs.value);
 }
+
+bool	Number::operator==(Number const & rhs) const
+{
+	return (value == rhs.value);
+}
+
 void	Number::setIndex(unsigned int i)
 {
 	index = i;

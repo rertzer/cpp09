@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:28:27 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/21 16:44:17 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/22 15:59:25 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 NbVector::NbVector():len(0)
 {}
 
-NbVector::NbVector(std::vector<Number> const & vec):nbs(vec), len(len(vec))
+NbVector::NbVector(std::vector<Number> const & vec):nbs(vec), len(vec.size())
 {}
 
 NbVector::NbVector(NbVector const & nbv):nbs(nbv.nbs), len(nbv.len)
@@ -34,7 +34,7 @@ NbVector &	NbVector::operator=(NbVector const & rhs)
 	return *this;
 }
 
-Number &	NbVector::operator[](size_t i)
+Number &	NbVector::operator[](unsigned int i)
 {
 	return nbs[i];
 }
@@ -44,7 +44,7 @@ void	NbVector::loadData(int argc, char **argv)
 	for (int i = 1; i < argc; i++)
 	{
 		std::stringstream	ss;
-		Number			nb = Number();
+		Number				nb = Number();
 
 		ss.exceptions(ss.failbit | ss.badbit);
 		if (!std::isdigit(argv[i][0]))
@@ -52,13 +52,18 @@ void	NbVector::loadData(int argc, char **argv)
 		ss << argv[i];
 		unsigned int tmp;
 		ss >> tmp;
-		nb.setValue(tmp);
-		nb.setIndex(i);
+		nb.setValue(tmp);;
+		nb.setIndex((i - 1));
 		nbs.push_back(nb);
 		len++;
 	}
 }
 
+void	NbVector::clear()
+{
+	nbs.clear();
+	len = 0;
+}
 
 void	NbVector::push(Number nb)
 {
@@ -66,7 +71,12 @@ void	NbVector::push(Number nb)
 	len++;
 }
 
-size_t	NbVector::getLen()
+void	NbVector::increase()
+{
+	len++;
+}
+
+unsigned int	NbVector::getLen()
 {
 	return len;
 }
@@ -78,7 +88,7 @@ std::vector<Number> &	NbVector::getVector()
 
 Number &	NbVector::getByIndex(unsigned int index)
 {
-	for (size_t i = 0; i < len; i++)
+	for (unsigned int i = 0; i < len; i++)
 	{
 		if (nbs[i].getIndex() == index)
 			return (nbs[i]);
@@ -88,10 +98,10 @@ Number &	NbVector::getByIndex(unsigned int index)
 
 std::ostream & operator<<(std::ostream & ost, NbVector & rhs)
 {
-	for (std::vector<Number>::iterator it = rhs.getVector().begin(); it != rhs.getVector().end(); it++)
+	for (unsigned int i = 0; i < rhs.getLen(); i++)
 	{
-		ost << *it;
-		if (it->getIndex() != rhs.getVector().back().getIndex())
+		ost << rhs[i];
+		if (i != rhs.getLen() - 1)
 			ost << " ";
 		else
 			ost << std::endl;

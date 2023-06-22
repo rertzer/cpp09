@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:20:31 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/21 16:46:51 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/22 15:58:46 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,15 @@ class	NbVector
 		~NbVector();
 		
 		NbVector &	operator=(NbVector const & rhs);
-		Number &	operator[](size_t i);
+		Number &	operator[](unsigned int i);
 		
 		std::vector<Number>  &	getVector();
-		size_t					getLen();
+		unsigned int			getLen();
 		Number &				getByIndex(unsigned int index);
 		void					loadData(int argc, char **argv);
+		void					clear();
 		void					push(Number nb);
+		void					increase();
 		
 		class	ParsingException: public std::exception
 		{
@@ -57,7 +59,7 @@ class	NbVector
 
 	private:
 		std::vector<Number> 	nbs;
-		size_t					len;
+		unsigned int			len;
 };
 
 std::ostream & operator<<(std::ostream & ost, NbVector & rhs);

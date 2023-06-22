@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:07:32 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/21 14:35:16 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/22 10:18:37 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class	Number
 		~Number();
 		Number &	operator=(Number const & rhs);
 		bool		operator<(Number const & rhs) const;
+		bool		operator==(Number const & rhs) const;
 
 		void			setIndex(unsigned int i);
 		void			setValue(unsigned int v);
