@@ -6,84 +6,116 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 10:43:21 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/22 16:47:18 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/24 11:40:51 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 
-void	fjSort(NbVector & to_sort)
+// public
+
+PmergeMe::PmergeMe()
+{}
+
+PmergeMe::PmergeMe(NbVector const & mm):merge_me(mm)
+{}
+
+PmergeMe::PmergeMe(PmergeMe const & rhs)
 {
-	NbVector	halfbig = NbVector();
-	NbVector	remain = NbVector();
-	NbVector	pairing = NbVector();
-
-	if (to_sort.getLen() == 1)
-		return ;
-
-	pairSwap(to_sort);
-	splitMe(to_sort, halfbig, remain, pairing);
-	fjSort(halfbig);
-	reload(to_sort, remain, halfbig, pairing);
-	reinsert(to_sort, halfbig, remain, pairing);
+	*this = rhs;
 }
 
-void	pairSwap(NbVector & to_sort)
+PmergeMe::~PmergeMe()
+{}
+
+PmergeMe &	PmergeMe::operator=(PmergeMe const & rhs)
 {
-	for (unsigned int i = 0; i < to_sort.getLen() - 1; i += 2)
+	if (this != &rhs)
 	{
-		if (to_sort[i] < to_sort[i + 1])
+		merge_me = rhs.merge_me;
+		halfbig = rhs.halfbig;
+		remain = rhs.remain;
+		pairing = rhs.pairing;
+	}
+	return *this;
+}
+
+void	PmergeMe::fjSort()
+{
+	if (merge_me.getLen() == 1)
+		return ;
+
+	pairSwap();
+	splitMe();
+
+	PmergeMe big_sorting = PmergeMe(halfbig);
+	big_sorting.fjSort();
+	halfbig = big_sorting.getMergeMe();
+
+	reload();
+	reinsert();
+}
+
+NbVector & PmergeMe::getMergeMe()
+{
+	return merge_me;
+}
+
+// private
+void	PmergeMe::pairSwap()
+{
+	for (unsigned int i = 0; i < merge_me.getLen() - 1; i += 2)
+	{
+		if (merge_me[i] < merge_me[i + 1])
 		{
-			Number tmp = to_sort[i];
-			to_sort[i] = to_sort[i + 1];
-			to_sort[i + 1] = tmp;
+			Number tmp = merge_me[i];
+			merge_me[i] = merge_me[i + 1];
+			merge_me[i + 1] = tmp;
 		}
 	}
 }
 
-void	splitMe(NbVector & to_sort, NbVector & halfbig, NbVector & remain, NbVector & pairing)
+void	PmergeMe::splitMe()
 {
 	unsigned int i = 0;	
 	Number	pr = Number();
 
-	for (; i < to_sort.getLen() - 1; i += 2)
+	for (; i < merge_me.getLen() - 1; i += 2)
 	{
-		pr.setValue(to_sort[i + 1].getIndex());
-		pr.setIndex(to_sort[i].getIndex());
+		pr.setValue(merge_me[i + 1].getIndex());
+		pr.setIndex(merge_me[i].getIndex());
 		pairing.push(pr);
-		halfbig.push(to_sort[i]);
-		remain.push(to_sort[i + 1]);
+		halfbig.push(merge_me[i]);
+		remain.push(merge_me[i + 1]);
 	}
-	if (to_sort.getLen() % 2)
+	if (merge_me.getLen() % 2)
 	{
-		pr.setValue(to_sort[i].getIndex());
+		pr.setValue(merge_me[i].getIndex());
 		pr.setIndex(-1);
 		pairing.push(pr);
-		remain.push(to_sort[i]);
+		remain.push(merge_me[i]);
 	}
 }
 
-void	reload(NbVector & to_sort, NbVector & remain, NbVector & halfbig, NbVector & pairing)
+void	PmergeMe::reload()
 {
 	unsigned int	index;	
 	Number			to_insert = Number();
 
-	to_sort.clear();
+	merge_me.clear();
 
 	index = halfbig.getVector().front().getIndex();
 	index = pairing.getByIndex(index).getValue();
 
 	to_insert = remain.getByIndex(index);
-	to_sort.push(to_insert);
+	merge_me.push(to_insert);
 	for (unsigned int i = 0; i < halfbig.getLen(); i++)
-		to_sort.push(halfbig[i]);
+		merge_me.push(halfbig[i]);
 }
 
-void	reinsert(NbVector & to_sort, NbVector & halfbig, NbVector & remain, NbVector & pairing)
+void	PmergeMe::reinsert()
 {
-	std::vector<unsigned int> the_order;
-	
-	getOrder(the_order, remain.getLen()); // size_t vs uint
+	getOrder();
 	
 	for (size_t i = 0; i < the_order.size(); i++)
 	{
@@ -94,11 +126,11 @@ void	reinsert(NbVector & to_sort, NbVector & halfbig, NbVector & remain, NbVecto
 			index = -1;
 
 		index = pairing.getByIndex(index).getValue();
-		binaryInsert(to_sort, remain.getByIndex(index));
+		binaryInsert(remain.getByIndex(index), the_order[i] + i + 1);
 	}
 }
 
-void	getOrder(std::vector<unsigned int> & the_order, unsigned int len)
+void	PmergeMe::getOrder()
 {
 	unsigned int	group = 1;
 	unsigned int	current = 2;
@@ -107,8 +139,8 @@ void	getOrder(std::vector<unsigned int> & the_order, unsigned int len)
 	while (group)
 	{
 		g = nextGroupSize(g, group);
-		unsigned int maxi = std::min(current + g, len + 1);
-		if (current + g > len)
+		unsigned int maxi = std::min(current + g, remain.getLen() + 1);
+		if (current + g > remain.getLen())
 			group = -1;
 		for (unsigned int i = maxi; i > current; i--)
 			the_order.push_back(i - 2);
@@ -117,7 +149,7 @@ void	getOrder(std::vector<unsigned int> & the_order, unsigned int len)
 	}
 }
 
-unsigned int	nextGroupSize(unsigned int g, unsigned int group)
+unsigned int	PmergeMe::nextGroupSize(unsigned int g, unsigned int group)
 {
 	unsigned int	gs = 1;
 	
@@ -127,24 +159,23 @@ unsigned int	nextGroupSize(unsigned int g, unsigned int group)
 	return (gs - g); 
 }
 
-void	binaryInsert(NbVector & to_sort, Number r)
+void	PmergeMe::binaryInsert(Number r, long int right)
 {
-	long int						left = 0;
-	long int						right = to_sort.getLen();
-	long int						pos;
-	std::vector<Number>::iterator		it = to_sort.getVector().begin();
+	long int							left = 0;
+	long int							pos;
+	std::vector<Number>::iterator		it = merge_me.getVector().begin();
 	
 	while (1)
 	{
 		pos = (left + right) / 2;
 
-		if (to_sort[pos] < r)
+		if (merge_me[pos] < r)
 		{
-			if (pos == to_sort.getLen() - 1 || pos == left)
+			if (pos == merge_me.getLen() - 1 || pos == left)
 				break ;
 			left = pos;
 		}
-		else if (r < to_sort[pos])
+		else if (r < merge_me[pos])
 		{
 			if (pos == 0)
 			{
@@ -158,6 +189,6 @@ void	binaryInsert(NbVector & to_sort, Number r)
 		else
 			break ;
 	}
-	to_sort.getVector().insert(it + pos + 1, r);
-	to_sort.increase();
+	merge_me.getVector().insert(it + pos + 1, r);
+	merge_me.increase();
 }
