@@ -1,34 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PmergeMe.cpp                                       :+:      :+:    :+:   */
+/*   PmergeMeL.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 10:43:21 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/26 09:45:33 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/26 12:02:15 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "PmergeMe.hpp"
+#include "PmergeMeL.hpp"
 
 // public
 
-PmergeMe::PmergeMe()
+PmergeMeL::PmergeMeL()
 {}
 
-PmergeMe::PmergeMe(NbVector const & mm):merge_me(mm)
+PmergeMeL::PmergeMeL(NbList const & mm):merge_me(mm)
 {}
 
-PmergeMe::PmergeMe(PmergeMe const & rhs)
+PmergeMeL::PmergeMeL(PmergeMeL const & rhs)
 {
 	*this = rhs;
 }
 
-PmergeMe::~PmergeMe()
+PmergeMeL::~PmergeMeL()
 {}
 
-PmergeMe &	PmergeMe::operator=(PmergeMe const & rhs)
+PmergeMeL &	PmergeMeL::operator=(PmergeMeL const & rhs)
 {
 	if (this != &rhs)
 	{
@@ -40,7 +40,7 @@ PmergeMe &	PmergeMe::operator=(PmergeMe const & rhs)
 	return *this;
 }
 
-void	PmergeMe::fjSort()
+void	PmergeMeL::fjSort()
 {
 	if (merge_me.getLen() == 1)
 		return ;
@@ -48,21 +48,21 @@ void	PmergeMe::fjSort()
 	pairSwap();
 	splitMe();
 
-	PmergeMe big_sorting = PmergeMe(halfbig);
+	PmergeMeL big_sorting = PmergeMeL(halfbig);
 	big_sorting.fjSort();
-	halfbig = big_sorting.getMergeMe();
+	halfbig = big_sorting.getMergeMeL();
 
 	reload();
 	reinsert();
 }
 
-NbVector & PmergeMe::getMergeMe()
+NbList & PmergeMeL::getMergeMeL()
 {
 	return merge_me;
 }
 
 // private
-void	PmergeMe::pairSwap()
+void	PmergeMeL::pairSwap()
 {
 	for (unsigned int i = 0; i < merge_me.getLen() - 1; i += 2)
 	{
@@ -75,7 +75,7 @@ void	PmergeMe::pairSwap()
 	}
 }
 
-void	PmergeMe::splitMe()
+void	PmergeMeL::splitMe()
 {
 	unsigned int i = 0;	
 	Number	pr = Number();
@@ -97,14 +97,14 @@ void	PmergeMe::splitMe()
 	}
 }
 
-void	PmergeMe::reload()
+void	PmergeMeL::reload()
 {
 	unsigned int	index;	
 	Number			to_insert = Number();
 
 	merge_me.clear();
 
-	index = halfbig.getVector().front().getIndex();
+	index = halfbig.getList().front().getIndex();
 	index = pairing.getByIndex(index).getValue();
 
 	to_insert = remain.getByIndex(index);
@@ -113,18 +113,19 @@ void	PmergeMe::reload()
 		merge_me.push(halfbig[i]);
 }
 
-void	PmergeMe::reinsert()
+void	PmergeMeL::reinsert()
 {
 	getOrder();
 	
-	for (size_t i = 0; i < the_order.size(); i++)
+	for (std::list<unsigned int>::iterator it = the_order.begin(); it != the_order.end(); it++)
 	{
 		unsigned int	index;
 		unsigned int	end;
-		if (the_order[i] < halfbig.getLen())
+
+		if (*it < halfbig.getLen())
 		{
-			index = halfbig[the_order[i]].getIndex();
-			end = merge_me.getBigPosByIndex(index, the_order[i] + i + 1);
+			index = halfbig[*it].getIndex();
+			end = merge_me.getBigPosByIndex(index);
 		}
 		else
 		{
@@ -136,7 +137,7 @@ void	PmergeMe::reinsert()
 	}
 }
 
-void	PmergeMe::getOrder()
+void	PmergeMeL::getOrder()
 {
 	unsigned int	group = 1;
 	unsigned int	current = 2;
@@ -155,7 +156,7 @@ void	PmergeMe::getOrder()
 	}
 }
 
-unsigned int	PmergeMe::nextGroupSize(unsigned int g, unsigned int group)
+unsigned int	PmergeMeL::nextGroupSize(unsigned int g, unsigned int group)
 {
 	unsigned int	gs = 1;
 	
@@ -165,11 +166,11 @@ unsigned int	PmergeMe::nextGroupSize(unsigned int g, unsigned int group)
 	return (gs - g); 
 }
 
-void	PmergeMe::binaryInsert(Number r, long int right)
+void	PmergeMeL::binaryInsert(Number r, long int right)
 {
 	long int							left = 0;
 	long int							pos;
-	std::vector<Number>::iterator		it = merge_me.getVector().begin();
+	std::list<Number>::iterator		it = merge_me.getList().begin();
 	
 	while (1)
 	{
@@ -195,6 +196,9 @@ void	PmergeMe::binaryInsert(Number r, long int right)
 		else
 			break ;
 	}
-	merge_me.getVector().insert(it + pos + 1, r);
+	for (long int i = 0; i < pos + 1; i++)
+		it++;
+
+	merge_me.getList().insert(it, r);
 	merge_me.increase();
 }

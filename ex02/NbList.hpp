@@ -1,38 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   NbVector.hpp                                       :+:      :+:    :+:   */
+/*   NbList.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:20:31 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/26 09:26:02 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/26 12:00:30 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NBVECTOR_HPP
-# define NBVECTOR_HPP
+#ifndef NBLIST_HPP
+# define NBLIST_HPP
 
 # include <iostream>
 # include <sstream>
-# include <vector>
+# include <list>
 # include <exception>
 # include "Number.hpp"
 
-class	NbVector
+class	NbList
 {
 	public:
-		NbVector();
-		NbVector(std::vector<Number> const & vec);
-		NbVector(NbVector const & nbv);
-		~NbVector();
+		NbList();
+		NbList(std::list<Number> const & vec);
+		NbList(NbList const & nbv);
+		~NbList();
 		
-		NbVector &	operator=(NbVector const & rhs);
+		NbList &	operator=(NbList const & rhs);
 		Number &	operator[](unsigned int i);
 		
-		std::vector<Number>  &	getVector();
+		std::list<Number>  &	getList();
 		unsigned int			getLen();
-		unsigned int			getBigPosByIndex(unsigned int index, unsigned int end);
+		unsigned int			getBigPosByIndex(unsigned int index);
 		Number &				getByIndex(unsigned int index);
 		void					loadData(int argc, char **argv);
 		void					clear();
@@ -59,9 +59,9 @@ class	NbVector
 
 
 	private:
-		std::vector<Number> 	nbs;
-		unsigned int			len;
+		std::list<Number> 	nbs;
+		unsigned int		len;
 };
 
-std::ostream & operator<<(std::ostream & ost, NbVector & rhs);
+std::ostream & operator<<(std::ostream & ost, NbList & rhs);
 #endif

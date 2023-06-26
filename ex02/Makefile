@@ -10,7 +10,7 @@ OBJ_DIR = obj/
 
 INC_DIR = ./
 
-SOURCES = main.cpp PmergeMe.cpp Number.cpp NbVector.cpp
+SOURCES = main.cpp PmergeMe.cpp PmergeMeL.cpp Number.cpp NbVector.cpp NbList.cpp
 
 OBJ = $(SOURCES:.cpp=.o)
 

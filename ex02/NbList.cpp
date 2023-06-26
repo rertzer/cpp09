@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   NbVector.cpp                                       :+:      :+:    :+:   */
+/*   NbList.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 11:28:27 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/26 09:49:16 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/26 13:12:08 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "NbVector.hpp"
+#include "NbList.hpp"
 
-NbVector::NbVector():len(0)
+NbList::NbList():len(0)
 {}
 
-NbVector::NbVector(std::vector<Number> const & vec):nbs(vec), len(vec.size())
+NbList::NbList(std::list<Number> const & lst):nbs(lst), len(lst.size())
 {}
 
-NbVector::NbVector(NbVector const & nbv):nbs(nbv.nbs), len(nbv.len)
+NbList::NbList(NbList const & nbl):nbs(nbl.nbs), len(nbl.len)
 {}
 
-NbVector::~NbVector()
+NbList::~NbList()
 {}
 
-NbVector &	NbVector::operator=(NbVector const & rhs)
+NbList &	NbList::operator=(NbList const & rhs)
 {
 	if (this != &rhs)
 	{
@@ -34,12 +34,19 @@ NbVector &	NbVector::operator=(NbVector const & rhs)
 	return *this;
 }
 
-Number &	NbVector::operator[](unsigned int i)
+Number &	NbList::operator[](unsigned int i)
 {
-	return nbs[i];
+	std::list<Number>::iterator it = nbs.begin();
+	for (unsigned int j = 0; j < i; j++)
+	{
+		it++;
+		if (it == nbs.end())
+			throw (OutOfRangeException());
+	}
+	return *it;
 }
 
-void	NbVector::loadData(int argc, char **argv)
+void	NbList::loadData(int argc, char **argv)
 {
 	for (int i = 1; i < argc; i++)
 	{
@@ -59,54 +66,56 @@ void	NbVector::loadData(int argc, char **argv)
 	}
 }
 
-void	NbVector::clear()
+void	NbList::clear()
 {
 	nbs.clear();
 	len = 0;
 }
 
-void	NbVector::push(Number nb)
+void	NbList::push(Number nb)
 {
 	nbs.push_back(nb);
 	len++;
 }
 
-void	NbVector::increase()
+void	NbList::increase()
 {
 	len++;
 }
 
-unsigned int	NbVector::getLen()
+unsigned int	NbList::getLen()
 {
 	return len;
 }
 
-std::vector<Number> &	NbVector::getVector()
+std::list<Number> &	NbList::getList()
 {
 	return nbs;
 }
 
-unsigned int	NbVector::getBigPosByIndex(unsigned int index, unsigned int end)
+unsigned int	NbList::getBigPosByIndex(unsigned int index)
 {
-	for (; end >= 0; end--)
+	unsigned int	i = 0;
+	for (std::list<Number>::iterator it = nbs.begin(); it != nbs.end(); it++)
 	{
-		if (nbs[end].getIndex() == index)
-			return (end);
+		if (it->getIndex() == index)
+			return (i);
+		i++;
 	}
 	throw (OutOfRangeException());
 }
 
-Number &	NbVector::getByIndex(unsigned int index)
+Number &	NbList::getByIndex(unsigned int index)
 {
-	for (unsigned int i = 0; i < len; i++)
+	for (std::list<Number>::iterator it = nbs.begin(); it != nbs.end(); it++)
 	{
-		if (nbs[i].getIndex() == index)
-			return (nbs[i]);
+		if (it->getIndex() == index)
+			return (*it);
 	}
 	throw (OutOfRangeException());
 }
 
-std::ostream & operator<<(std::ostream & ost, NbVector & rhs)
+std::ostream & operator<<(std::ostream & ost, NbList & rhs)
 {
 	for (unsigned int i = 0; i < rhs.getLen(); i++)
 	{
