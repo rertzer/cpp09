@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 10:43:21 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/26 09:45:33 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/28 15:16:09 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,8 +173,17 @@ void	PmergeMe::binaryInsert(Number r, long int right)
 	
 	while (1)
 	{
+		if (right - left == 1)
+		{
+			if (r < merge_me[left])
+				pos = left - 1;
+			else if (merge_me[right] < r)
+				pos = right;
+			else
+				pos = left;
+			break ;
+		}
 		pos = (left + right) / 2;
-
 		if (merge_me[pos] < r)
 		{
 			if (pos == merge_me.getLen() - 1 || pos == left)

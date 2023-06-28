@@ -6,7 +6,7 @@
 /*   By: rertzer <rertzer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 09:52:23 by rertzer           #+#    #+#             */
-/*   Updated: 2023/06/20 12:26:21 by rertzer          ###   ########.fr       */
+/*   Updated: 2023/06/28 13:37:28 by rertzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void	BitcoinExchange::printExchange() const
 	for (std::map<struct tm, float>::const_iterator it = exchange.begin(); it != exchange.end(); it++)
 	{
 		
-		std::cout << it->first.tm_year << " " << it->second << std::endl;
+		std::cout << it->first.tm_year << " " << std::fixed << it->second << std::endl;
 	}
 }
 
@@ -171,8 +171,8 @@ void	BitcoinExchange::processInputEntry(std::pair<struct tm, float> entry)
 float	BitcoinExchange::convert(std::pair<struct tm, float> entry) const
 {
 	std::map<struct tm, float, bool(*)(struct tm const &, struct tm const &)>::const_iterator it;
-	it = exchange.lower_bound(entry.first);
-
+	it = exchange.upper_bound(entry.first);
+	it--;
 	return (entry.second * it->second);
 }
 
@@ -189,10 +189,6 @@ bool	timeCompare(struct tm const & a, struct tm const & b)
 bool	badDate(std::string tmp)
 {
 	std::stringstream ss;
-	/*ss << tmp.substr(0, 4);
-	unsigned int	year;
-	ss >> year;
-	ss.clear();*/
 	ss << tmp.substr(5, 2);
 	unsigned int	month;
 	ss >> month;
